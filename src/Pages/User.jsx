@@ -1,16 +1,24 @@
-import React from "react";
-import GithubContext from "../context/github/GithubContext";
-import { useParams, Link } from "react-router-dom";
-import { useContext, useEffect } from "react";
 import { FaCodepen, FaStore, FaUserFriends, FaUsers } from "react-icons/fa";
+import { useEffect, useContext } from "react";
+import { useParams, Link } from "react-router-dom";
 import RepoList from "../components/repos/RepoList";
+import GithubContext from "../context/github/GithubContext";
 import { getUserAndRepos } from "../context/github/GithubActions";
-const User = () => {
-  const { getUser, user } = useContext(GithubContext);
+
+function User() {
+  const { user, repos, dispatch } = useContext(GithubContext);
+
   const params = useParams();
+
   useEffect(() => {
-    getUser(params.login);
-  }, []);
+    const getUserData = async () => {
+      const userData = await getUserAndRepos(params.login);
+      dispatch({ type: "GET_USER_AND_REPOS", payload: userData });
+    };
+
+    getUserData();
+  }, [dispatch, params.login]);
+
   const {
     name,
     type,
@@ -29,11 +37,12 @@ const User = () => {
   } = user;
 
   const websiteUrl = blog?.startsWith("http") ? blog : "https://" + blog;
+
   return (
     <>
-      <div className="w-full mx-auto lg:w-10/12 text-white">
+      <div className="w-full mx-auto lg:w-10/12">
         <div className="mb-4">
-          <Link to="/" className="btn btn-ghost text-white">
+          <Link to="/" className="btn btn-ghost">
             Back To Search
           </Link>
         </div>
@@ -45,8 +54,8 @@ const User = () => {
                 <img src={avatar_url} alt="" />
               </figure>
               <div className="card-body justify-end">
-                <h2 className="card-title mb-0 text-white">{name}</h2>
-                <p className="flex-grow-0 text-white">{login}</p>
+                <h2 className="card-title mb-0">{name}</h2>
+                <p className="flex-grow-0">{login}</p>
               </div>
             </div>
           </div>
@@ -66,7 +75,7 @@ const User = () => {
                   href={html_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="btn btn-outline text-white"
+                  className="btn btn-outline"
                 >
                   Visit Github Profile
                 </a>
@@ -76,16 +85,14 @@ const User = () => {
             <div className="w-full rounded-lg shadow-md bg-base-100 stats">
               {location && (
                 <div className="stat">
-                  <div className="stat-title text-md text-white">Location</div>
-                  <div className="text-lg stat-value text-white">
-                    {location}
-                  </div>
+                  <div className="stat-title text-md">Location</div>
+                  <div className="text-lg stat-value">{location}</div>
                 </div>
               )}
               {blog && (
                 <div className="stat">
-                  <div className="stat-title text-md text-white">Website</div>
-                  <div className="text-lg stat-value text-white">
+                  <div className="stat-title text-md">Website</div>
+                  <div className="text-lg stat-value">
                     <a href={websiteUrl} target="_blank" rel="noreferrer">
                       {websiteUrl}
                     </a>
@@ -94,8 +101,8 @@ const User = () => {
               )}
               {twitter_username && (
                 <div className="stat">
-                  <div className="stat-title text-md text-white">Twitter</div>
-                  <div className="text-lg stat-value text-white">
+                  <div className="stat-title text-md">Twitter</div>
+                  <div className="text-lg stat-value">
                     <a
                       href={`https://twitter.com/${twitter_username}`}
                       target="_blank"
@@ -116,8 +123,8 @@ const User = () => {
               <div className="stat-figure text-secondary">
                 <FaUsers className="text-3xl md:text-5xl" />
               </div>
-              <div className="stat-title pr-5 text-white">Followers</div>
-              <div className="stat-value pr-5 text-3xl md:text-4xl text-white">
+              <div className="stat-title pr-5">Followers</div>
+              <div className="stat-value pr-5 text-3xl md:text-4xl">
                 {followers}
               </div>
             </div>
@@ -126,8 +133,8 @@ const User = () => {
               <div className="stat-figure text-secondary">
                 <FaUserFriends className="text-3xl md:text-5xl" />
               </div>
-              <div className="stat-title pr-5 text-white">Following</div>
-              <div className="stat-value pr-5 text-3xl md:text-4xl text-white">
+              <div className="stat-title pr-5">Following</div>
+              <div className="stat-value pr-5 text-3xl md:text-4xl">
                 {following}
               </div>
             </div>
@@ -136,8 +143,8 @@ const User = () => {
               <div className="stat-figure text-secondary">
                 <FaCodepen className="text-3xl md:text-5xl" />
               </div>
-              <div className="stat-title pr-5 text-white">Public Repos</div>
-              <div className="stat-value pr-5 text-3xl md:text-4xl text-white">
+              <div className="stat-title pr-5">Public Repos</div>
+              <div className="stat-value pr-5 text-3xl md:text-4xl">
                 {public_repos}
               </div>
             </div>
@@ -146,17 +153,18 @@ const User = () => {
               <div className="stat-figure text-secondary">
                 <FaStore className="text-3xl md:text-5xl" />
               </div>
-              <div className="stat-title pr-5 text-white">Public Gists</div>
-              <div className="stat-value pr-5 text-3xl md:text-4xl text-white">
+              <div className="stat-title pr-5">Public Gists</div>
+              <div className="stat-value pr-5 text-3xl md:text-4xl">
                 {public_gists}
               </div>
             </div>
           </div>
         </div>
+
         <RepoList repos={repos} />
       </div>
     </>
   );
-};
+}
 
 export default User;
