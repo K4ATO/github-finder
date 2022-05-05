@@ -14,15 +14,15 @@ const RepoItem = ({ repo }) => {
   return (
     <div className="mb-2 rounded-md card bg-base-200 hover:bg-base-300">
       <div className="card-body">
-        <h3 className="mb-2 text-xl font-semibold">
+        <h3 className="mb-2 text-xl font-semibold text-white">
           <a href={html_url}>
-            <FaLink className="inline mr-1" /> {name}
+            <FaLink className="inline mr-1 text-white" /> {name}
           </a>
         </h3>
-        <p className="mb-3">{description}</p>
+        <p className="mb-3 text-white">{description}</p>
         <div>
           <div className="mr-2 badge badge-info badge-lg">
-            <FaEye className="mr-2" /> {watchers_count}
+            <FaEye className="mr-2 " /> {watchers_count}
           </div>
           <div className="mr-2 badge badge-success badge-lg">
             <FaStar className="mr-2" /> {stargazers_count}
